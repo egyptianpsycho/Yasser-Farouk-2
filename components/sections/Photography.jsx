@@ -67,7 +67,7 @@ export function Photography() {
       <div className="md:hidden px-6 pt-8 pb-16 grid grid-cols-1 gap-4">
         {BTS_PHOTOS.map((img, i) => <figure key={img.id} className="relative">
             <div className="relative aspect-[4/5] overflow-hidden bg-secondary">
-              <OptimizedImage src={img.src} alt={img.caption} sizes="100vw" className="object-cover" />
+              <OptimizedImage priority={true} src={img.src} alt={img.caption} sizes="100vw" className="object-cover" />
 
               <div className="absolute top-3 left-3 font-mono text-[10px] uppercase tracking-widest text-white/80 bg-black/40 backdrop-blur px-2 py-1">
                 BTS // {String(i + 1).padStart(3, "0")}
@@ -85,7 +85,7 @@ export function Photography() {
         <div ref={trackRef} className="flex gap-10 pl-[40vw] pr-[20vw] will-change-transform">
           {BTS_PHOTOS.map((img, i) => <figure key={img.id} data-bts className="group relative shrink-0 w-[32vw]">
               <div className="relative aspect-[3/4] overflow-hidden bg-secondary">
-                <OptimizedImage src={img.src} alt={img.caption} sizes="32vw" className="object-cover group-hover:scale-105 transition-transform duration-1000" />
+                <OptimizedImage src={img.src} alt={img.caption} priority={true} sizes="32vw" className="object-cover group-hover:scale-105 transition-transform duration-1000" />
 
                 <div className="absolute top-3 left-3 font-mono text-[10px] uppercase tracking-widest text-white/80 bg-black/40 backdrop-blur px-2 py-1">
                   BTS // {String(i + 1).padStart(3, "0")}

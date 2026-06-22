@@ -137,9 +137,9 @@ export function Hero({ start = false }) {
         ref={bgRef}
         data-anim-hero-bg
         className="absolute inset-0 z-0 will-change-transform bg-cover bg-center"
-        style={{
-          backgroundImage: `url(${HERO_BG})`,
-        }}
+        // style={{
+        //   backgroundImage: `url(${HERO_BG})`,
+        // }}
         aria-hidden="true"
       >
         <div className="absolute inset-0 bg-gradient-to-b from-background/50 via-background/30 to-background" />

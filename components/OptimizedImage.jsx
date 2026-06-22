@@ -15,7 +15,6 @@ export default function OptimizedImage({
   className = "",
   sizes = "100vw",
   priority = false,
-  quality = 85,
   ...rest
 }) {
   return (
@@ -25,7 +24,6 @@ export default function OptimizedImage({
       fill
       sizes={sizes}
       priority={priority}
-      quality={quality}
       className={className}
       {...rest}
     />

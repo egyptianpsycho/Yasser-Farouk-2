@@ -153,7 +153,7 @@ function VideoCard({
   return <button type="button" onClick={() => onOpen(p)} className="group relative w-full h-full text-left cursor-pointer overflow-hidden bg-secondary block" style={compact ? {
     aspectRatio: "1 / 1"
   } : undefined}>
-      <OptimizedImage src={p.cover} alt={p.title} sizes="(max-width: 768px) 50vw, 25vw" className="object-cover transition-transform duration-1000 group-hover:scale-105" />
+      <OptimizedImage src={p.cover} alt={p.title} priority={true} sizes="(max-width: 768px) 50vw, 25vw" className="object-cover transition-transform duration-1000 group-hover:scale-105" />
 
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent pointer-events-none" />
       <div className="absolute top-3 left-3 font-mono text-[10px] uppercase tracking-widest text-white/80">

@@ -219,7 +219,7 @@ export function PhotoProjects() {
         marginLeft: "calc(-50vw + 50%)"
       }}>
             {filtered.map(p => <div key={p.id} onClick={() => setActive(p)} className="photo-item relative aspect-square overflow-hidden bg-secondary cursor-pointer group">
-                <OptimizedImage src={p.cover} alt={p.title} sizes="(max-width: 768px) 50vw, 25vw" className="object-cover transition-transform duration-700 group-active:scale-105" />
+                <OptimizedImage src={p.cover} alt={p.title} priority={true} sizes="(max-width: 768px) 50vw, 25vw" className="object-cover transition-transform duration-700 group-active:scale-105" />
 
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-active:opacity-100 transition-opacity" />
                 <p className="absolute bottom-1 left-1 right-1 text-center font-mono text-[0.55rem] uppercase tracking-widest text-white opacity-0 group-active:opacity-100 transition-opacity truncate">
@@ -228,7 +228,7 @@ export function PhotoProjects() {
               </div>)}
           </div> : <div ref={gridRef} className={`parent transition-grid ${transitioning ? "grid-exit" : "grid-enter"} ${displayed !== "All" ? "filtered" : ""}`}>
             {filtered.map((p, idx) => <div key={p.id} onClick={() => setActive(p)} className={`photo-item div${idx + 1} relative cursor-pointer group overflow-hidden bg-secondary`}>
-                <OptimizedImage src={p.cover} alt={p.title} sizes="(max-width: 768px) 50vw, 25vw" className="object-cover transition-transform duration-1000 ease-out group-hover:scale-110" />
+                <OptimizedImage src={p.cover} alt={p.title} priority={true} sizes="(max-width: 768px) 50vw, 25vw" className="object-cover bg-red-500 transition-transform duration-1000 ease-out group-hover:scale-110" />
 
                 <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
                 <div className="absolute top-3 left-3 font-mono text-[10px] uppercase tracking-widest text-white/70 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
