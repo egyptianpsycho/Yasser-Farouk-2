@@ -8,42 +8,87 @@ import Hls from "hls.js";
 
 // ─── Themed Play/Pause Button ─────────────────────────────────────────────────
 
-function ThemedPlayPause({
-  isPlaying
-}) {
-  return <div style={{
-    filter: "drop-shadow(0 2px 20px rgba(0,0,0,0.7))"
-  }}>
-      {!isPlaying ?
-    // ── Play ──
-    <svg viewBox="0 0 100 100" width="88" height="88">
+function ThemedPlayPause({ isPlaying }) {
+  return (
+    <div
+      style={{
+        filter: "drop-shadow(0 2px 20px rgba(0,0,0,0.7))",
+      }}
+    >
+      {!isPlaying ? (
+        // ── Play ──
+        <svg viewBox="0 0 100 100" width="88" height="88">
           {/* Ghost ring */}
-          <circle cx="50" cy="50" r="44" fill="none" stroke="hsl(0 85% 55%)" strokeWidth="5" opacity="0.25" />
+          <circle
+            cx="50"
+            cy="50"
+            r="44"
+            fill="none"
+            stroke="hsl(0 85% 55%)"
+            strokeWidth="5"
+            opacity="0.25"
+          />
           {/* Solid ring */}
-          <circle cx="50" cy="50" r="44" fill="none" stroke="hsl(0 85% 55%)" strokeWidth="5" />
+          <circle
+            cx="50"
+            cy="50"
+            r="44"
+            fill="none"
+            stroke="hsl(0 85% 55%)"
+            strokeWidth="5"
+          />
           {/* Triangle */}
           <polygon points="41,31 41,69 72,50" fill="hsl(0 85% 55%)" />
-        </svg> :
-    // ── Pause ──
-    <svg viewBox="0 0 100 100" width="88" height="88">
+        </svg>
+      ) : (
+        // ── Pause ──
+        <svg viewBox="0 0 100 100" width="88" height="88">
           {/* Ghost ring */}
-          <circle cx="50" cy="50" r="44" fill="none" stroke="hsl(0 85% 55%)" strokeWidth="5" opacity="0.25" />
+          <circle
+            cx="50"
+            cy="50"
+            r="44"
+            fill="none"
+            stroke="hsl(0 85% 55%)"
+            strokeWidth="5"
+            opacity="0.25"
+          />
           {/* Solid ring */}
-          <circle cx="50" cy="50" r="44" fill="none" stroke="hsl(0 85% 55%)" strokeWidth="5" />
+          <circle
+            cx="50"
+            cy="50"
+            r="44"
+            fill="none"
+            stroke="hsl(0 85% 55%)"
+            strokeWidth="5"
+          />
           {/* Bar left */}
-          <rect x="32" y="28" width="12" height="44" rx="3" fill="hsl(0 85% 55%)" />
+          <rect
+            x="32"
+            y="28"
+            width="12"
+            height="44"
+            rx="3"
+            fill="hsl(0 85% 55%)"
+          />
           {/* Bar right */}
-          <rect x="56" y="28" width="12" height="44" rx="3" fill="hsl(0 85% 55%)" />
-        </svg>}
-    </div>;
+          <rect
+            x="56"
+            y="28"
+            width="12"
+            height="44"
+            rx="3"
+            fill="hsl(0 85% 55%)"
+          />
+        </svg>
+      )}
+    </div>
+  );
 }
 
 // ─── Reel Player ─────────────────────────────────────────────────────────────
 
-function ReelPlayer({
-  src,
-  poster
-}) {
+function ReelPlayer({ src, poster }) {
   const videoRef = useRef(null);
   const hlsRef = useRef(null);
   const hasStartedRef = useRef(false);
@@ -101,9 +146,12 @@ function ReelPlayer({
       if (videoRef.current && !videoRef.current.paused) setShowBtn(false);
     }, 2200);
   }, []);
-  useEffect(() => () => {
-    if (hideTimer.current) window.clearTimeout(hideTimer.current);
-  }, []);
+  useEffect(
+    () => () => {
+      if (hideTimer.current) window.clearTimeout(hideTimer.current);
+    },
+    []
+  );
   const togglePlay = () => {
     const v = videoRef.current;
     if (!v) return;
@@ -113,24 +161,60 @@ function ReelPlayer({
       v.play().catch(() => setIsLoading(false));
     } else v.pause();
   };
-  return <div className="relative w-full h-full bg-black select-none cursor-pointer" onMouseMove={resetHideTimer} onMouseEnter={resetHideTimer} onClick={togglePlay}>
-      <video ref={videoRef} poster={poster} className="w-full h-full object-cover" playsInline preload="metadata" />
+  return (
+    <div
+      className="relative w-full h-full bg-black select-none cursor-pointer"
+      onMouseMove={resetHideTimer}
+      onMouseEnter={resetHideTimer}
+      onClick={togglePlay}
+    >
+      <video
+        ref={videoRef}
+        poster={poster}
+        className="w-full h-full object-cover"
+        playsInline
+        preload="metadata"
+      />
 
       {/* Buffering spinner */}
-      {isLoading && <div className="absolute inset-0 flex items-center justify-center bg-black/30 pointer-events-none z-10">
-          <svg className="animate-spin w-10 h-10" viewBox="0 0 24 24" fill="none">
-            <circle cx="12" cy="12" r="10" stroke="hsl(0 85% 55%)" strokeWidth="2" strokeOpacity="0.25" />
-            <path d="M12 2a10 10 0 0 1 10 10" stroke="hsl(0 85% 55%)" strokeWidth="2" strokeLinecap="round" />
+      {isLoading && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black/30 pointer-events-none z-10">
+          <svg
+            className="animate-spin w-10 h-10"
+            viewBox="0 0 24 24"
+            fill="none"
+          >
+            <circle
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="hsl(0 85% 55%)"
+              strokeWidth="2"
+              strokeOpacity="0.25"
+            />
+            <path
+              d="M12 2a10 10 0 0 1 10 10"
+              stroke="hsl(0 85% 55%)"
+              strokeWidth="2"
+              strokeLinecap="round"
+            />
           </svg>
-        </div>}
+        </div>
+      )}
 
       {/* Themed animated button */}
-      {!isLoading && <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10 transition-opacity duration-300" style={{
-      opacity: showBtn || !isPlaying ? 1 : 0
-    }}>
+      {!isLoading && (
+        <div
+          className="absolute inset-0 flex items-center justify-center pointer-events-none z-10 transition-opacity duration-300"
+          style={{
+            opacity: showBtn || !isPlaying ? 1 : 0,
+          }}
+        >
           <ThemedPlayPause isPlaying={isPlaying} />
-        </div>}
-    </div>;
+        </div>
+      )}
+    </div>
+  );
 }
 
 // ─── Reel Section ─────────────────────────────────────────────────────────────
@@ -142,7 +226,7 @@ export function Reel() {
       const reveals = root.current.querySelectorAll("[data-reveal]");
       gsap.set(reveals, {
         opacity: 0,
-        y: 40
+        y: 40,
       });
       gsap.to(reveals, {
         opacity: 1,
@@ -153,24 +237,34 @@ export function Reel() {
         scrollTrigger: {
           trigger: root.current,
           start: "top 80%",
-          once: true
-        }
+          once: true,
+        },
       });
     }, root);
     return () => ctx.revert();
   }, []);
-  return <section className="py-32 px-6 border-t border-border">
+  return (
+    <section className="py-32 px-6 bg-background relative" id="about">
       <div ref={root} className="max-w-7xl mx-auto">
         <div className="flex justify-between items-end mb-12">
-          <h2 data-reveal className="font-display text-5xl md:text-7xl uppercase tracking-tighter">
+          <h2
+            data-reveal
+            className="font-display text-5xl md:text-7xl uppercase tracking-tighter"
+          >
             The Reel
           </h2>
-          <div data-reveal className="font-mono text-xs uppercase text-muted-foreground mb-2">
+          <div
+            data-reveal
+            className="font-mono text-xs uppercase text-muted-foreground mb-2"
+          >
             [ 01 ] Full Portfolio
           </div>
         </div>
 
-        <div data-reveal className="relative aspect-[16/7] overflow-hidden bg-secondary">
+        <div
+          data-reveal
+          className="relative aspect-[16/7] overflow-hidden bg-secondary"
+        >
           <ReelPlayer src={REEL_VIDEO_SRC} poster={REEL_IMG} />
           <div className="absolute top-8 right-8 font-mono text-[10px] uppercase tracking-widest text-white/80 pointer-events-none z-10">
             02:47 / Director's Cut
@@ -181,8 +275,18 @@ export function Reel() {
         </div>
 
         <div className="mt-16 md:mt-24">
-          <ScrollTextReveal label="[ - ] ABOUT" lines={["I make images that breathe —", "stills and motion built on patience,", "available light, and a love for", "the quiet middle of a story."]} className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl leading-[1.15] tracking-tight text-foreground" />
+          <ScrollTextReveal
+            label="[ - ] ABOUT"
+            lines={[
+              "I make images that breathe —",
+              "stills and motion built on patience,",
+              "available light, and a love for",
+              "the quiet middle of a story.",
+            ]}
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl leading-[1.15] tracking-tight text-foreground"
+          />
         </div>
       </div>
-    </section>;
+    </section>
+  );
 }

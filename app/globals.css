@@ -67,6 +67,7 @@
 @layer base {
   * {
     border-color: var(--color-border);
+    margin: 0;
   }
   html {
     scroll-behavior: smooth;
@@ -409,5 +410,5 @@ html.has-custom-cursor button {
 
 
 .aloaloalo{
-  
+ background-color: black;
 }
