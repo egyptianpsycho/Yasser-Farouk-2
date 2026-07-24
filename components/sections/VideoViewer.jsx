@@ -199,7 +199,81 @@ function ThemedPlayPause({ isPlaying }) {
   );
 }
 
+// ─── Entry Loading Overlay ────────────────────────────────────────────────────
+
+function EntryLoader({ loaderRef, title }) {
+  return (
+    <div
+      ref={loaderRef}
+      className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-black"
+    >
+      {/* Animated gold arc spinner */}
+      <div className="relative w-14 h-14">
+        {/* Outer glow ring */}
+        <svg
+          viewBox="0 0 56 56"
+          className="absolute inset-0 w-full h-full"
+        >
+          <circle
+            cx="28"
+            cy="28"
+            r="24"
+            fill="none"
+            stroke="#C41E3A"
+            strokeWidth="1"
+            opacity="0.08"
+          />
+        </svg>
+        {/* Spinning arc */}
+        <svg
+          viewBox="0 0 56 56"
+          className="w-full h-full"
+          style={{
+            animation: "spin 1.4s linear infinite",
+          }}
+        >
+          <circle
+            cx="28"
+            cy="28"
+            r="24"
+            fill="none"
+            stroke="rgba(201,168,76,0.10)"
+            strokeWidth="1.5"
+          />
+          <path
+            d="M28 4a24 24 0 0 1 24 24"
+            stroke="#C41E3A"
+            strokeWidth="1.5"
+            fill="none"
+            strokeLinecap="round"
+          />
+        </svg>
+        {/* Inner dot pulse */}
+        
+      </div>
+
+      {/* Project title */}
+      {title && (
+        <p
+          className="font-mono text-[10px] md:text-[20px] uppercase tracking-[0.35em] text-white/20 mt-6 select-none"
+          style={{ letterSpacing: "0.35em" }}
+        >
+          {title}
+        </p>
+      )}
+
+      {/* Inline keyframes — avoids needing a global CSS file */}
+      <style>{`
+        @keyframes spin   { to { transform: rotate(360deg); } }
+        @keyframes pulse  { 0%,100% { opacity:0.3; transform:scale(1);   }
+                            50%      { opacity:1;   transform:scale(1.6); } }
+      `}</style>
+    </div>
+  );
+}
+
 // ─── Native Video Player ──────────────────────────────────────────────────────
+
 function NativePlayer({ src, onOrientation }) {
   const containerRef = useRef(null);
   const videoRef = useRef(null);
@@ -218,6 +292,7 @@ function NativePlayer({ src, onOrientation }) {
   const [duration, setDuration] = useState(0);
   const [progress, setProgress] = useState(0);
   const [orientation, setOrientation] = useState(null);
+
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
@@ -234,6 +309,7 @@ function NativePlayer({ src, onOrientation }) {
       hlsRef.current = null;
     };
   }, [src]);
+
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
@@ -241,7 +317,8 @@ function NativePlayer({ src, onOrientation }) {
       setDuration(video.duration);
       const w = video.videoWidth;
       const h = video.videoHeight;
-      const o = h > w * 1.1 ? "portrait" : w > h * 1.1 ? "landscape" : "square";
+      const o =
+        h > w * 1.1 ? "portrait" : w > h * 1.1 ? "landscape" : "square";
       setOrientation(o);
       onOrientation?.(o);
     };
@@ -249,7 +326,6 @@ function NativePlayer({ src, onOrientation }) {
       hasStartedRef.current = true;
       setIsLoading(false);
       setIsPlaying(true);
-      // Unlock controls on the very first play
       setHasEverPlayed(true);
     };
     const onWaiting = () => {
@@ -280,28 +356,38 @@ function NativePlayer({ src, onOrientation }) {
     };
   }, []);
 
-  // Kick off the auto-hide timer the moment controls are first unlocked
   useEffect(() => {
     if (hasEverPlayed) resetHideTimer();
   }, [hasEverPlayed]);
+
   useEffect(() => {
     const onChange = () => setIsFullscreen(!!document.fullscreenElement);
     document.addEventListener("fullscreenchange", onChange);
     return () => document.removeEventListener("fullscreenchange", onChange);
   }, []);
+
   const resetHideTimer = useCallback(() => {
     setShowControls(true);
+    if (containerRef.current) containerRef.current.style.cursor = "default";
+
     if (hideTimer.current) window.clearTimeout(hideTimer.current);
     hideTimer.current = window.setTimeout(() => {
-      if (videoRef.current && !videoRef.current.paused) setShowControls(false);
+      if (videoRef.current && !videoRef.current.paused) {
+        setShowControls(false);
+        if (document.fullscreenElement && containerRef.current) {
+          containerRef.current.style.cursor = "none";
+        }
+      }
     }, 2800);
   }, []);
+
   useEffect(
     () => () => {
       if (hideTimer.current) window.clearTimeout(hideTimer.current);
     },
     []
   );
+
   const togglePlay = () => {
     const v = videoRef.current;
     if (!v) return;
@@ -340,41 +426,23 @@ function NativePlayer({ src, onOrientation }) {
     v.currentTime = ratio * v.duration;
     resetHideTimer();
   };
+
   const playerStyle =
     orientation === null
-      ? {
-          width: 0,
-          height: 0,
-          overflow: "hidden",
-          opacity: 0,
-        }
+      ? { width: 0, height: 0, overflow: "hidden", opacity: 0 }
       : orientation === "portrait"
-      ? {
-          height: "min(88vh, 680px)",
-          width: "auto",
-          aspectRatio: "9/16",
-        }
+      ? { height: "min(88vh, 680px)", width: "auto", aspectRatio: "9/16" }
       : orientation === "square"
-      ? {
-          height: "min(78vh, 680px)",
-          width: "auto",
-          aspectRatio: "1/1",
-        }
-      : {
-          width: "min(82%, 1100px)",
-          aspectRatio: "16/9",
-        };
+      ? { height: "min(78vh, 680px)", width: "auto", aspectRatio: "1/1" }
+      : { width: "min(82%, 1100px)", aspectRatio: "16/9" };
+
   return (
     <div
       ref={containerRef}
       className="relative bg-black select-none"
       style={playerStyle}
-      onMouseMove={() => {
-        if (hasEverPlayed) resetHideTimer();
-      }}
-      onMouseEnter={() => {
-        if (hasEverPlayed) resetHideTimer();
-      }}
+      onMouseMove={() => { if (hasEverPlayed) resetHideTimer(); }}
+      onMouseEnter={() => { if (hasEverPlayed) resetHideTimer(); }}
       onClick={togglePlay}
     >
       <video
@@ -393,9 +461,7 @@ function NativePlayer({ src, onOrientation }) {
       {!isLoading && (
         <div
           className="absolute inset-0 flex items-center justify-center pointer-events-none z-10 transition-opacity duration-300"
-          style={{
-            opacity: showControls || !isPlaying ? 1 : 0,
-          }}
+          style={{ opacity: showControls || !isPlaying ? 1 : 0 }}
         >
           <ThemedPlayPause isPlaying={isPlaying} />
         </div>
@@ -405,9 +471,7 @@ function NativePlayer({ src, onOrientation }) {
       {hasEverPlayed && (
         <div
           className="absolute bottom-0 left-0 right-0 z-20 transition-opacity duration-300"
-          style={{
-            opacity: showControls ? 1 : 0,
-          }}
+          style={{ opacity: showControls ? 1 : 0 }}
           onClick={(e) => e.stopPropagation()}
         >
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent pointer-events-none rounded-b" />
@@ -420,9 +484,7 @@ function NativePlayer({ src, onOrientation }) {
             >
               <div
                 className="h-full bg-primary rounded-full relative transition-none"
-                style={{
-                  width: `${progress * 100}%`,
-                }}
+                style={{ width: `${progress * 100}%` }}
               >
                 <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 size-3 rounded-full bg-white opacity-0 group-hover/bar:opacity-100 transition-opacity" />
               </div>
@@ -466,20 +528,61 @@ function NativePlayer({ src, onOrientation }) {
   );
 }
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-
 // ─── VideoViewer ──────────────────────────────────────────────────────────────
 
 export function VideoViewer({ open, project, onClose }) {
   const overlayRef = useRef(null);
   const contentRef = useRef(null);
   const headerTitleRef = useRef(null);
+  // ── Entry loader refs/state ──
+  const entryLoaderRef = useRef(null);
+  const [entryLoadDone, setEntryLoadDone] = useState(false);
+
   const [mounted, setMounted] = useState(false);
   const [viewerOrientation, setViewerOrientation] = useState(null);
+
   useEffect(() => setMounted(true), []);
+
+  useEffect(() => {
+    if (open) {
+      setViewerOrientation(null);
+      // Reset loader every time the viewer opens (or a new project is loaded)
+      setEntryLoadDone(false);
+    }
+  }, [open, project?.video]);
+
+  // ── Dismiss loader once native video metadata is ready ──
+  useEffect(() => {
+    if (viewerOrientation !== null) setEntryLoadDone(true);
+  }, [viewerOrientation]);
+
+  // ── Dismiss loader for embeddable iframes after a brief paint window ──
+  useEffect(() => {
+    if (open && project && isEmbeddable(project.video)) {
+      const t = setTimeout(() => setEntryLoadDone(true), 750);
+      return () => clearTimeout(t);
+    }
+  }, [open, project?.video]);
+
+  // ── GSAP fade-out of the entry loader ──
+  useEffect(() => {
+    if (entryLoadDone && entryLoaderRef.current) {
+      gsap.to(entryLoaderRef.current, {
+        opacity: 0,
+        duration: 0.55,
+        ease: "power2.inOut",
+        onComplete: () => {
+          if (entryLoaderRef.current)
+            entryLoaderRef.current.style.display = "none";
+        },
+      });
+    }
+  }, [entryLoadDone]);
+
   useEffect(() => {
     if (open) setViewerOrientation(null);
   }, [open, project]);
+
   useEffect(() => {
     if (!open) return;
     const prev = document.body.style.overflow;
@@ -493,40 +596,23 @@ export function VideoViewer({ open, project, onClose }) {
       lenis?.start();
     };
   }, [open]);
+
   useEffect(() => {
     if (!open || !overlayRef.current) return;
     gsap.fromTo(
       overlayRef.current,
-      {
-        opacity: 0,
-      },
-      {
-        opacity: 1,
-        duration: 0.35,
-        ease: "power2.out",
-      }
+      { opacity: 0 },
+      { opacity: 1, duration: 0.35, ease: "power2.out" }
     );
     gsap.fromTo(
       contentRef.current,
-      {
-        y: 30,
-        opacity: 0,
-      },
-      {
-        y: 0,
-        opacity: 1,
-        duration: 0.5,
-        ease: "power3.out",
-        delay: 0.15,
-      }
+      { y: 30, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.5, ease: "power3.out", delay: 0.15 }
     );
     if (project && isEmbeddable(project.video)) {
       gsap.fromTo(
         headerTitleRef.current,
-        {
-          opacity: 0,
-          filter: "blur(12px)",
-        },
+        { opacity: 0, filter: "blur(12px)" },
         {
           opacity: 1,
           filter: "blur(0px)",
@@ -537,14 +623,12 @@ export function VideoViewer({ open, project, onClose }) {
       );
     }
   }, [open]);
+
   useEffect(() => {
     if (!viewerOrientation || !headerTitleRef.current) return;
     gsap.fromTo(
       headerTitleRef.current,
-      {
-        opacity: 0,
-        filter: "blur(12px)",
-      },
+      { opacity: 0, filter: "blur(12px)" },
       {
         opacity: 1,
         filter: "blur(0px)",
@@ -554,10 +638,9 @@ export function VideoViewer({ open, project, onClose }) {
       }
     );
   }, [viewerOrientation]);
+
   const handleClose = useCallback(() => {
-    const tl = gsap.timeline({
-      onComplete: onClose,
-    });
+    const tl = gsap.timeline({ onComplete: onClose });
     tl.to(contentRef.current, {
       y: 30,
       opacity: 0,
@@ -566,31 +649,32 @@ export function VideoViewer({ open, project, onClose }) {
     });
     tl.to(
       overlayRef.current,
-      {
-        opacity: 0,
-        duration: 0.3,
-      },
+      { opacity: 0, duration: 0.3 },
       "<"
     );
   }, [onClose]);
+
   useEffect(() => {
     if (!open) return;
-    const onKey = (e) => {
-      if (e.key === "Escape") handleClose();
-    };
+    const onKey = (e) => { if (e.key === "Escape") handleClose(); };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [open, handleClose]);
+
   if (!mounted || !open || !project) return null;
+
   const isPortrait = viewerOrientation === "portrait";
+
   return createPortal(
     <div
       ref={overlayRef}
       className="fixed inset-0 z-[9998] bg-black flex flex-col"
-      style={{
-        opacity: 0,
-      }}
+      style={{ opacity: 0 }}
     >
+      {/* ── Entry loading overlay ──────────────────────────────────────────── */}
+      <EntryLoader loaderRef={entryLoaderRef} title={project.title} />
+
+      {/* ── Header bar ────────────────────────────────────────────────────── */}
       <div className="flex items-center gap-3 px-5 sm:px-8 py-3 shrink-0 border-b border-white/5">
         <button
           onClick={handleClose}
@@ -615,20 +699,17 @@ export function VideoViewer({ open, project, onClose }) {
         </button>
       </div>
 
+      {/* ── Content ───────────────────────────────────────────────────────── */}
       <div
         ref={contentRef}
         className="flex-1 overflow-hidden"
-        style={{
-          opacity: 0,
-        }}
+        style={{ opacity: 0 }}
       >
         {isEmbeddable(project.video) ? (
           <div className="w-full h-full flex flex-col items-center justify-center bg-black gap-8 px-6">
             <div
               className="w-full max-w-5xl"
-              style={{
-                aspectRatio: "16/9",
-              }}
+              style={{ aspectRatio: "16/9" }}
             >
               <iframe
                 src={toEmbedUrl(project.video)}
@@ -640,10 +721,7 @@ export function VideoViewer({ open, project, onClose }) {
             <div
               ref={headerTitleRef}
               className="w-full max-w-5xl flex items-start justify-between gap-6"
-              style={{
-                opacity: 0,
-                filter: "blur(12px)",
-              }}
+              style={{ opacity: 0, filter: "blur(12px)" }}
             >
               <h2 className="font-display text-3xl md:text-5xl uppercase tracking-tighter leading-none text-white">
                 {project.title}
@@ -654,7 +732,6 @@ export function VideoViewer({ open, project, onClose }) {
                     {project.meta}
                   </p>
                 )}
-                {/* {project.year && <p className="font-mono text-[10px] uppercase tracking-widest text-primary mt-1">{project.year}</p>} */}
               </div>
             </div>
           </div>
@@ -668,10 +745,7 @@ export function VideoViewer({ open, project, onClose }) {
             <div
               ref={headerTitleRef}
               className="flex flex-col gap-6 max-w-xs shrink-0 hidden md:flex"
-              style={{
-                opacity: 0,
-                filter: "blur(12px)",
-              }}
+              style={{ opacity: 0, filter: "blur(12px)" }}
             >
               <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-primary">
                 {project.id}
@@ -686,11 +760,6 @@ export function VideoViewer({ open, project, onClose }) {
                     {project.meta}
                   </p>
                 )}
-                {/* {project.year && (
-                  <p className="font-mono text-[10px] uppercase tracking-widest text-white/30">
-                    {project.year}
-                  </p>
-                )} */}
               </div>
             </div>
           </div>
@@ -720,7 +789,6 @@ export function VideoViewer({ open, project, onClose }) {
                       {project.meta}
                     </p>
                   )}
-                  {/* {project.year && <p className="font-mono text-[10px] uppercase tracking-widest text-primary mt-1">{project.year}</p>} */}
                 </div>
               </div>
             )}
@@ -731,4 +799,5 @@ export function VideoViewer({ open, project, onClose }) {
     document.body
   );
 }
+
 export default VideoViewer;

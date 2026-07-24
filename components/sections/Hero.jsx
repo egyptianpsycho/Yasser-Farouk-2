@@ -96,53 +96,43 @@ export function Hero({ start = false }) {
     resizeRenderer();
     window.addEventListener("resize", resizeRenderer);
 
-    const renderScene = () => renderer.render(scene, camera);
+    const renderScene = () => {
+      if (canvas.style.display !== "none") {
+        renderer.render(scene, camera);
+      }
+    };
     renderScene();
 
-    // ── will-change helpers ──────────────────────────────────────────────────
-    //
-    // will-change tells the browser to promote an element to its own GPU
-    // compositor layer BEFORE the animation starts, so the first frame doesn't
-    // stutter while the layer is being created.
-    //
-    // In this component:
-    //   - bgRef         → promoted for "transform" (the pin scroll may move it)
-    //   - canvas        → promoted for "transform, opacity" (WebGL dissolve)
-    //   - #hero-text    → promoted for "opacity, filter" (blur-in intro)
-    //   - [data-anim-hero] → promoted for "opacity, filter" (stagger blur-in)
-    //
-    // We remove will-change in two places:
-    //   1. onComplete of the intro timeline — text animations are done, no need
-    //      to keep those compositor layers alive.
-    //   2. onLeave of the ScrollTrigger pin — the hero has dissolved and exited
-    //      the viewport, freeing the GPU layer for the next section to use.
-    //
-    // We re-add it in onEnterBack so scrubbing back up still gets a promoted layer.
-    //
-    const willChangeEls = [];
+    // ── Granular will-change management ─────────────────────────────────────
+    const willChangeEls = new Set();
 
     const addWillChange = (el, props) => {
       if (!el) return;
       el.style.willChange = props;
-      willChangeEls.push(el);
+      willChangeEls.add(el);
+    };
+
+    const removeWillChange = (el) => {
+      if (!el) return;
+      el.style.willChange = "auto";
+      willChangeEls.delete(el);
     };
 
     const removeAllWillChange = () => {
       willChangeEls.forEach((el) => {
         el.style.willChange = "auto";
       });
-      willChangeEls.length = 0;
+      willChangeEls.clear();
     };
+
+    // Promote elements for intro animation
+    const heroText = rootRef.current.querySelector("#hero-text");
+    const animHeroEls = rootRef.current.querySelectorAll("[data-anim-hero]");
 
     addWillChange(bgRef.current, "transform");
     addWillChange(canvas, "transform, opacity");
-    addWillChange(
-      rootRef.current.querySelector("#hero-text"),
-      "opacity, filter"
-    );
-    rootRef.current
-      .querySelectorAll("[data-anim-hero]")
-      .forEach((el) => addWillChange(el, "opacity, filter"));
+    addWillChange(heroText, "opacity, filter");
+    animHeroEls.forEach((el) => addWillChange(el, "opacity, filter"));
 
     // ── GSAP context ─────────────────────────────────────────────────────────
     const ctx = gsap.context(() => {
@@ -152,7 +142,11 @@ export function Hero({ start = false }) {
       // ── Intro timeline ───────────────────────────────────────────────────
       const tl = gsap.timeline({
         defaults: { ease: "expo.out" },
-        onComplete: removeAllWillChange,
+        onComplete: () => {
+          // Immediately release text compositor layers once intro completes
+          removeWillChange(heroText);
+          animHeroEls.forEach((el) => removeWillChange(el));
+        },
       });
 
       tl.fromTo(
@@ -184,10 +178,6 @@ export function Hero({ start = false }) {
       }
 
       // ── Scroll: pin + WebGL dissolve ─────────────────────────────────────
-      // This ScrollTrigger creates a pin spacer of 100vh (end - start).
-      // Everything else that needs to animate during the hero's scroll window
-      // MUST use this same trigger element (rootRef.current) so GSAP can
-      // correctly resolve scroll positions relative to the pinned layout.
       gsap.to(material.uniforms.uProgress, {
         value: 1.5,
         ease: "none",
@@ -201,32 +191,32 @@ export function Hero({ start = false }) {
           anticipatePin: 1,
           invalidateOnRefresh: true,
           onUpdate: renderScene,
-          onLeave: removeAllWillChange,
+          onLeave: () => {
+            // Stop shader & drop GPU layer once hero pin finishes
+            canvas.style.display = "none";
+            removeAllWillChange();
+          },
           onEnterBack: () => {
+            // Restore shader rendering & re-promote GPU layers when scrolling back up
+            canvas.style.display = "block";
             addWillChange(canvas, "transform, opacity");
+            addWillChange(bgRef.current, "transform");
+            renderScene();
+          },
+          onLeaveBack: () => {
+            canvas.style.display = "block";
+            removeAllWillChange();
+          },
+          onEnter: () => {
+            canvas.style.display = "block";
+            addWillChange(canvas, "transform, opacity");
+            addWillChange(bgRef.current, "transform");
+            renderScene();
           },
         },
       });
 
       // ── Scroll: overlay blur scrub ───────────────────────────────────────
-      //
-      // WHY NOT trigger: "#about":
-      //   When GSAP pins the hero it inserts a "pin spacer" div that pushes
-      //   all content below it down by 100vh. So #about's real scroll position
-      //   becomes ~200vh, not the ~100vh GSAP measured before pinning. The
-      //   trigger fires at the wrong time — either too early, too late, or
-      //   instantly jumps to its end state.
-      //
-      // THE FIX — trigger off the hero itself using percentage offsets:
-      //   "25% top"  = when 25% of the pin window has scrolled past
-      //   "75% top"  = when 75% of the pin window has scrolled past
-      //   This is always correct because it's relative to the same element
-      //   the pin is attached to, so the spacer displacement cancels out.
-      //
-      // Adjust the percentages to taste:
-      //   - Start earlier (e.g. "10% top") → blur begins sooner in the scroll
-      //   - End later   (e.g. "90% top") → blur finishes closer to unpin
-      //
       gsap.fromTo(
         ".overlay-blur-pin",
         {
@@ -326,10 +316,10 @@ export function Hero({ start = false }) {
         <h1
           id="hero-text"
           data-headline
-          className="opacity-0 font-display leading-[0.85] tracking-tighter uppercase text-center select-none w-full"
+          className="pointer-events-auto opacity-0 font-display leading-[0.85] tracking-tighter uppercase text-center select-none w-full"
           style={{ fontSize: "clamp(3.5rem, 20vw, 19rem)" }}
         >
-          <span className="block lg:mt-34">Yasser Farouk</span>
+          <span className="block lg:mt-34 herooo-text">Yasser Farouk</span>
         </h1>
 
         <div className="mt-6 sm:mt-8 flex flex-wrap items-center justify-center gap-3 sm:gap-6 md:gap-12 font-mono text-[10px] sm:text-xs uppercase tracking-[0.2em] text-center">
@@ -346,7 +336,7 @@ export function Hero({ start = false }) {
               className="relative inline-block h-[1.2em] w-[7.5em] overflow-hidden align-middle text-left"
               aria-live="polite"
             >
-              <span className="loc-item absolute inset-0 flex items-center justify-start text-primary tracking-[0.25em] will-change-transform">
+              <span className="loc-item absolute inset-0 flex items-center justify-start text-primary tracking-[0.25em]">
                 Egypt
               </span>
             </span>

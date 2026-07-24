@@ -2,28 +2,39 @@
 
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
+
 export function Intro({ onDone }) {
   const root = useRef(null);
   const counterRef = useRef(null);
   const barRef = useRef(null);
-  const topPanel = useRef(null);
-  const botPanel = useRef(null);
+  const barsWrapper = useRef(null);
+  const contentWrapper = useRef(null);
   const [n, setN] = useState(0);
+
   useEffect(() => {
     const obj = {
       v: 0,
     };
+
     const tl = gsap.timeline({
       onComplete: () => {
         onDone();
       },
     });
-    tl.to(obj, {
-      v: 100,
-      duration: 2.2,
-      ease: "power2.inOut",
-      onUpdate: () => setN(Math.round(obj.v)),
+
+    // 1. Add will-change before the animation starts to optimize performance
+    tl.set([contentWrapper.current, barRef.current], {
+      willChange: "opacity, filter, transform",
     })
+      .set(barsWrapper.current.children, {
+        willChange: "height",
+      })
+      .to(obj, {
+        v: 100,
+        duration: 2.2,
+        ease: "power2.inOut",
+        onUpdate: () => setN(Math.round(obj.v)),
+      })
       .to(
         barRef.current,
         {
@@ -33,48 +44,55 @@ export function Intro({ onDone }) {
         },
         0
       )
+      // 2. Fades out AND smoothly blurs the entire center text block
       .to(
-        counterRef.current,
+        contentWrapper.current,
         {
           opacity: 0,
-          duration: 0.4,
+          filter: "blur(12px)", // Added blur effect
+          color: "#8F6A6A", // Optional: Change color to a muted tone for a more dramatic effect
+          duration: 1, // Slightly increased duration for a smoother blur transition
+          ease: "power2.inOut",
         },
         "+=0.1"
       )
+      // Staggered pixel curtain reveal
       .to(
-        topPanel.current,
+        barsWrapper.current.children,
         {
-          yPercent: -100,
+          height: 0,
           duration: 1.1,
+          stagger: 0.08,
           ease: "expo.inOut",
         },
         "<"
       )
-      .to(
-        botPanel.current,
-        {
-          yPercent: 100,
-          duration: 1.1,
-          ease: "expo.inOut",
-        },
-        "<"
-      )
+      // 3. Cleanup: Remove will-change properties to free up browser memory
+      .set([contentWrapper.current, barRef.current, barsWrapper.current.children], {
+        willChange: "auto",
+      })
       .set(root.current, {
         display: "none",
       });
   }, [onDone]);
+
   return (
     <div ref={root} className="fixed inset-0 z-[200] pointer-events-none">
-      <div
-        ref={topPanel}
-        className="absolute top-0 left-0 w-full h-1/2 bg-background"
-      />
-      <div
-        ref={botPanel}
-        className="absolute bottom-0 left-0 w-full h-1/2 bg-background"
-      />
+      {/* Pixel Curtains Background */}
+      <div ref={barsWrapper} className="absolute inset-0 flex w-full h-full overflow-hidden">
+        {[...Array(10)].map((_, i) => (
+          <div 
+            key={i} 
+            className="flex-1 h-full bg-[#121212] scale-x-[1.05]" 
+          />
+        ))}
+      </div>
 
-      <div className="absolute inset-0 flex flex-col items-center justify-center text-foreground">
+      {/* Grouped content to ensure it stays above the bars and fades together */}
+      <div
+        ref={contentWrapper}
+        className="absolute inset-0 flex flex-col items-center justify-center text-foreground z-10"
+      >
         <div className="font-mono text-[10px] uppercase tracking-[0.4em] text-muted-foreground mb-6">
           Yasser Farouk
         </div>
