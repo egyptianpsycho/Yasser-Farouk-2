@@ -312,12 +312,12 @@ export function Hero({ start = false }) {
       </div>
 
       {/* ── Hero typography ───────────────────────────────────────────────── */}
-      <div className="relative z-20 w-full px-4 sm:px-6 md:px-10 flex flex-col items-center mix-blend-difference pointer-events-none">
+      <div className="relative z-20 w-full px-4 sm:px-6 md:px-10 max-sm:pt-40 flex flex-col items-center mix-blend-difference pointer-events-none">
         <h1
           id="hero-text"
           data-headline
           className="pointer-events-auto opacity-0 font-display leading-[0.85] tracking-tighter uppercase text-center select-none w-full"
-          style={{ fontSize: "clamp(3.5rem, 20vw, 19rem)" }}
+          style={{ fontSize: "clamp(3.5rem, 15vw, 19rem)" }}
         >
           <span className="block lg:mt-34 herooo-text">Yasser Farouk</span>
         </h1>

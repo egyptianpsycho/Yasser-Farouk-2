@@ -3,15 +3,11 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-
 import { gsap } from "@/lib/gsap";
-
 import { useIsMobile } from "@/hooks/use-mobile";
 
 // ─── Replace with your Formspree form ID ───────────────────────────────────────
-
 const FORMSPREE_ID = "meebqrrp";
-
 // ────────────────────────────────────────────────────────────────────────────────
 
 const STEPS = [
@@ -22,7 +18,6 @@ const STEPS = [
     placeholder: "Your name",
     hint: "01 / Who's reaching out",
   },
-
   {
     key: "email",
     label: "Email",
@@ -30,7 +25,6 @@ const STEPS = [
     placeholder: "you@studio.com",
     hint: "02 / Where to reply",
   },
-
   {
     key: "project",
     label: "Project",
@@ -112,7 +106,6 @@ const SOCIALS = [
 
 export function ContactFooter() {
   const isMobile = useIsMobile();
-
   const [step, setStep] = useState(0);
   const [values, setValues] = useState({ name: "", email: "", project: "" });
   const [sent, setSent] = useState(false);
@@ -125,8 +118,6 @@ export function ContactFooter() {
   const textareaRef = useRef(null);
 
   // ── Scroll-reveal ────────────────────────────────────────────────────────────
-  // FIX: Use a more generous start threshold so the footer isn't clipped on
-  // mobile viewports where the section is already partially visible on load.
 
   useEffect(() => {
     if (!sectionRef.current) return;
@@ -145,11 +136,8 @@ export function ContactFooter() {
 
         scrollTrigger: {
           trigger: sectionRef.current,
-          // FIX: start earlier so the footer is already animating in when it
-          // enters the viewport on small screens (prevents the black-bar effect
-          // where the section background shows through un-revealed content).
-          start: "top 95%",
-          end: "top 50%",
+          start: "top 85%",
+          end: "top 55%", // Changed from 40% so it guarantees completion before the page bottoms out
           scrub: 0.6,
         },
       });
@@ -193,9 +181,7 @@ export function ContactFooter() {
   }, [step, sent, isMobile]);
 
   const current = STEPS[step];
-
   const canNext = (values[current?.key] ?? "").trim().length > 0;
-
   const isLast = step === STEPS.length - 1;
 
   // ── Formspree submit ──────────────────────────────────────────────────────
@@ -252,40 +238,28 @@ export function ContactFooter() {
     <footer
       id="contact"
       ref={sectionRef}
-      // FIX: removed `overflow-hidden` — it was clipping the scroll-reveal
-      // animation on mobile, causing the black-bar at the top of the section.
-      className="relative bg-white text-neutral-900 border-t border-neutral-200"
+      // Added flex-col and min-h-[100dvh] so the footer always fills the screen on scroll 
+      className="relative bg-white text-neutral-900 overflow-hidden border-t border-neutral-200 min-h-[100dvh] flex flex-col justify-center"
     >
-      <div className="relative max-w-7xl mx-auto px-6 pt-16 md:pt-40 pb-0">
-
+      {/* Changed pt-16 to pt-28 on mobile to prevent overlapping fixed headers */}
+      <div className="relative w-full max-w-7xl mx-auto px-6 pt-28 md:pt-40 pb-6 flex-1 flex flex-col justify-between">
         {/* ── Hero row ────────────────────────────────────────────────────── */}
-        {/*
-          FIX: On mobile the grid was `grid-cols-1` which stacked items, but
-          the headline div had no explicit visibility constraints so on some
-          devices it was getting clipped or hidden behind the navbar.
-          - Added `data-reveal` to the headline so it animates in with the rest.
-          - Added `pb-4 md:pb-0` so there's breathing room between headline
-            and form on mobile.
-          - Changed mobile layout to always show headline above the form.
-        */}
 
-        <div className="relative flex flex-col md:grid md:grid-cols-2 md:gap-10 md:items-center md:min-h-[50vh]">
-
-          {/* CTA headline — always rendered above the form on mobile */}
-          <div
+        <div className="relative grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 items-center md:min-h-[50vh]">
+          {/* CTA headline — static, no hover interaction */}
+          <h2
             data-reveal
-            className="font-display footertxt leading-[0.85] uppercase tracking-tighter text-left select-none pb-6 md:pb-0"
-            style={{ fontSize: "clamp(2.5rem, 7vw, 7rem)" }}
+            className="font-display footertxt leading-[0.85] uppercase tracking-tighter text-left select-none"
+            style={{ fontSize: "clamp(2.5rem, 7vw, 7rem)" }} // Increased from 2.5rem base for better mobile scale
           >
             Let&apos;s
             <br />
             Work
-          </div>
+          </h2>
 
-          {/* Form panel */}
+          {/* Form panel — always visible */}
           <div className="w-full">
             <div className="w-full md:max-w-md md:ml-auto border border-neutral-200 bg-neutral-50 p-6 md:p-8">
-
               {/* Step progress bar */}
               <div className="flex items-center gap-2 mb-8">
                 {STEPS.map((s, i) => (
@@ -304,6 +278,7 @@ export function ContactFooter() {
                           : "w-6 bg-neutral-900/30"
                       }`}
                     />
+
                     <span
                       className={`font-mono text-[10px] uppercase tracking-widest ${
                         i === step ? "text-neutral-900" : "text-neutral-500"
@@ -468,7 +443,6 @@ export function ContactFooter() {
         </div>
 
         {/* ── Two-column info grid ─────────────────────────────────────────── */}
-
         <div className="mt-16 md:mt-24 grid grid-cols-1 sm:grid-cols-2 gap-10 md:gap-12 border-t border-neutral-200 pt-12">
           {/* Contact */}
           <div data-reveal>
@@ -491,8 +465,8 @@ export function ContactFooter() {
             </a>
           </div>
 
-          {/* Social icons */}
-          <div data-reveal className="flex flex-col sm:items-end">
+          {/* Social icons — horizontal row, right-aligned */}
+          <div data-reveal className="flex flex-col items-start md:items-end">
             <div className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 mb-3">
               Socials
             </div>
@@ -515,12 +489,11 @@ export function ContactFooter() {
         </div>
 
         {/* ── Copyright bar ────────────────────────────────────────────────── */}
-
-        <div className="mt-12 pt-6 pb-8 border-t border-neutral-200 flex flex-col md:flex-row justify-between items-center gap-4 font-mono text-[10px] uppercase tracking-widest text-neutral-500">
+        <div className="mt-12 pt-6 pb-2 border-t border-neutral-200 flex flex-col md:flex-row justify-between items-center gap-4 font-mono text-[10px] uppercase tracking-widest text-neutral-500">
           <span>&copy; 2026 Yasser Film Studio</span>
           <span>Built in motion · No frames wasted</span>
         </div>
       </div>
     </footer>
   );
-} 
+}

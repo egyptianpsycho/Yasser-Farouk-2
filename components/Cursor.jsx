@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { gsap } from "@/lib/gsap";
-const INTERACTIVE_SELECTOR = "a, button, [role='button'], label, input, textarea, select, [data-cursor='text'],.hero-text,.footertxt,.herooo-text";
+const INTERACTIVE_SELECTOR = "a, button, [role='button'], label, input, textarea, select, [data-cursor='text'],.hero-text,.herooo-text";
 const TEXT_TAGS = new Set(["H1", "H2", "H3", "H4", "H5", "H6", "P", "SPAN", "STRONG", "EM", "LI", "A", "BUTTON", "LABEL"]);
 
 /** Returns true if (x,y) lies on a glyph rect inside element. */
