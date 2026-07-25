@@ -319,7 +319,7 @@ export function Hero({ start = false }) {
           className="pointer-events-auto opacity-0 font-display leading-[0.85] tracking-tighter uppercase text-center select-none w-full"
           style={{ fontSize: "clamp(3.5rem, 15vw, 19rem)" }}
         >
-          <span className="block lg:mt-34 herooo-text">Yasser Farouk</span>
+          <span className="block lg:mt-44 herooo-text">Yasser Farouk</span>
         </h1>
 
         <div className="mt-6 sm:mt-8 flex flex-wrap items-center justify-center gap-3 sm:gap-6 md:gap-12 font-mono text-[10px] sm:text-xs uppercase tracking-[0.2em] text-center">

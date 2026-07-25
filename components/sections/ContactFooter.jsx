@@ -169,16 +169,7 @@ export function ContactFooter() {
 
   // ── Auto-focus — desktop only ─────────────────────────────────────────────
 
-  useEffect(() => {
-    if (sent || isMobile) return;
 
-    const id = window.requestAnimationFrame(() => {
-      if (STEPS[step].type === "textarea") textareaRef.current?.focus();
-      else inputRef.current?.focus();
-    });
-
-    return () => window.cancelAnimationFrame(id);
-  }, [step, sent, isMobile]);
 
   const current = STEPS[step];
   const canNext = (values[current?.key] ?? "").trim().length > 0;
