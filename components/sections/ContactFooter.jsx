@@ -56,9 +56,7 @@ function InstagramIcon() {
       aria-hidden="true"
     >
       <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-
       <circle cx="12" cy="12" r="4" />
-
       <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
     </svg>
   );
@@ -88,9 +86,7 @@ function LinkedInIcon() {
       aria-hidden="true"
     >
       <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
-
       <rect x="2" y="9" width="4" height="12" />
-
       <circle cx="4" cy="4" r="2" />
     </svg>
   );
@@ -99,25 +95,17 @@ function LinkedInIcon() {
 const SOCIALS = [
   {
     label: "Instagram",
-
     href: "https://www.instagram.com/yasserfarouk_ph?igsh=cGExZXd6enVsN2J2&utm_source=qr",
-
     Icon: InstagramIcon,
   },
-
   {
     label: "Facebook",
-
     href: "https://www.facebook.com/share/18wRVwqHsv/?mibextid=wwXIfr",
-
     Icon: FacebookIcon,
   },
-
   {
     label: "LinkedIn",
-
     href: "https://www.linkedin.com/in/yasser-farouk?utm_source=share_via&utm_content=profile&utm_medium=member_ios",
-
     Icon: LinkedInIcon,
   },
 ];
@@ -126,24 +114,19 @@ export function ContactFooter() {
   const isMobile = useIsMobile();
 
   const [step, setStep] = useState(0);
-
   const [values, setValues] = useState({ name: "", email: "", project: "" });
-
   const [sent, setSent] = useState(false);
-
   const [submitting, setSubmitting] = useState(false);
-
   const [formError, setFormError] = useState(null);
 
   const sectionRef = useRef(null);
-
   const stepRef = useRef(null);
-
   const inputRef = useRef(null);
-
   const textareaRef = useRef(null);
 
   // ── Scroll-reveal ────────────────────────────────────────────────────────────
+  // FIX: Use a more generous start threshold so the footer isn't clipped on
+  // mobile viewports where the section is already partially visible on load.
 
   useEffect(() => {
     if (!sectionRef.current) return;
@@ -162,9 +145,11 @@ export function ContactFooter() {
 
         scrollTrigger: {
           trigger: sectionRef.current,
-
-          start: "top 85%",
-          end: "top 40%",
+          // FIX: start earlier so the footer is already animating in when it
+          // enters the viewport on small screens (prevents the black-bar effect
+          // where the section background shows through un-revealed content).
+          start: "top 95%",
+          end: "top 50%",
           scrub: 0.6,
         },
       });
@@ -182,9 +167,7 @@ export function ContactFooter() {
 
     gsap.fromTo(
       els,
-
       { y: 30, opacity: 0, filter: "blur(8px)" },
-
       {
         y: 0,
         opacity: 1,
@@ -222,23 +205,19 @@ export function ContactFooter() {
 
     if (!isLast) {
       setStep((s) => s + 1);
-
       return;
     }
 
     setSubmitting(true);
-
     setFormError(null);
 
     try {
       const res = await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
         method: "POST",
-
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
         },
-
         body: JSON.stringify({
           name: values.name,
           email: values.email,
@@ -250,7 +229,6 @@ export function ContactFooter() {
         setSent(true);
       } else {
         const data = await res.json().catch(() => ({}));
-
         setFormError(
           data?.errors?.[0]?.message ??
             "Something went wrong — please try again."
@@ -265,11 +243,8 @@ export function ContactFooter() {
 
   const handleReset = () => {
     setSent(false);
-
     setStep(0);
-
     setValues({ name: "", email: "", project: "" });
-
     setFormError(null);
   };
 
@@ -277,17 +252,29 @@ export function ContactFooter() {
     <footer
       id="contact"
       ref={sectionRef}
-      className="relative bg-white text-neutral-900 overflow-hidden border-t border-neutral-200"
+      // FIX: removed `overflow-hidden` — it was clipping the scroll-reveal
+      // animation on mobile, causing the black-bar at the top of the section.
+      className="relative bg-white text-neutral-900 border-t border-neutral-200"
     >
       <div className="relative max-w-7xl mx-auto px-6 pt-16 md:pt-40 pb-0">
+
         {/* ── Hero row ────────────────────────────────────────────────────── */}
+        {/*
+          FIX: On mobile the grid was `grid-cols-1` which stacked items, but
+          the headline div had no explicit visibility constraints so on some
+          devices it was getting clipped or hidden behind the navbar.
+          - Added `data-reveal` to the headline so it animates in with the rest.
+          - Added `pb-4 md:pb-0` so there's breathing room between headline
+            and form on mobile.
+          - Changed mobile layout to always show headline above the form.
+        */}
 
-        <div className="relative grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 items-center md:min-h-[50vh]">
-          {/* CTA headline — static, no hover interaction */}
+        <div className="relative flex flex-col md:grid md:grid-cols-2 md:gap-10 md:items-center md:min-h-[50vh]">
 
+          {/* CTA headline — always rendered above the form on mobile */}
           <div
             data-reveal
-            className="font-display footertxt leading-[0.85] uppercase tracking-tighter text-left select-none"
+            className="font-display footertxt leading-[0.85] uppercase tracking-tighter text-left select-none pb-6 md:pb-0"
             style={{ fontSize: "clamp(2.5rem, 7vw, 7rem)" }}
           >
             Let&apos;s
@@ -295,12 +282,11 @@ export function ContactFooter() {
             Work
           </div>
 
-          {/* Form panel — always visible */}
-
+          {/* Form panel */}
           <div className="w-full">
             <div className="w-full md:max-w-md md:ml-auto border border-neutral-200 bg-neutral-50 p-6 md:p-8">
-              {/* Step progress bar */}
 
+              {/* Step progress bar */}
               <div className="flex items-center gap-2 mb-8">
                 {STEPS.map((s, i) => (
                   <button
@@ -318,7 +304,6 @@ export function ContactFooter() {
                           : "w-6 bg-neutral-900/30"
                       }`}
                     />
-
                     <span
                       className={`font-mono text-[10px] uppercase tracking-widest ${
                         i === step ? "text-neutral-900" : "text-neutral-500"
@@ -335,11 +320,9 @@ export function ContactFooter() {
               </div>
 
               {/* Step content */}
-
               <div ref={stepRef} className="min-h-[220px]">
                 {sent ? (
                   /* ── Success state ─────────────────────────────────────── */
-
                   <div className="space-y-6">
                     <div
                       data-step-el
@@ -376,7 +359,6 @@ export function ContactFooter() {
                   </div>
                 ) : (
                   /* ── Multi-step form ──────────────────────────────────── */
-
                   <div className="space-y-5">
                     <div
                       data-step-el
@@ -471,7 +453,6 @@ export function ContactFooter() {
                         ) : (
                           <>
                             {isLast ? "Send" : "Next"}
-
                             <span className="transition-transform group-hover:translate-x-1">
                               →
                             </span>
@@ -490,7 +471,6 @@ export function ContactFooter() {
 
         <div className="mt-16 md:mt-24 grid grid-cols-1 sm:grid-cols-2 gap-10 md:gap-12 border-t border-neutral-200 pt-12">
           {/* Contact */}
-
           <div data-reveal>
             <div className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 mb-3">
               Contact
@@ -511,9 +491,8 @@ export function ContactFooter() {
             </a>
           </div>
 
-          {/* Social icons — horizontal row, right-aligned */}
-
-          <div data-reveal className="flex flex-col items-end">
+          {/* Social icons */}
+          <div data-reveal className="flex flex-col sm:items-end">
             <div className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 mb-3">
               Socials
             </div>
@@ -539,10 +518,9 @@ export function ContactFooter() {
 
         <div className="mt-12 pt-6 pb-8 border-t border-neutral-200 flex flex-col md:flex-row justify-between items-center gap-4 font-mono text-[10px] uppercase tracking-widest text-neutral-500">
           <span>&copy; 2026 Yasser Film Studio</span>
-
           <span>Built in motion · No frames wasted</span>
         </div>
       </div>
     </footer>
   );
-}
+} 
