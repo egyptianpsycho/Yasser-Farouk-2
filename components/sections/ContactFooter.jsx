@@ -238,7 +238,7 @@ export function ContactFooter() {
     <footer
       id="contact"
       ref={sectionRef}
-      // Added flex-col and min-h-[100dvh] so the footer always fills the screen on scroll 
+      // Added flex-col and min-h-[100dvh] so the footer always fills the screen on scroll
       className="relative bg-white text-neutral-900 overflow-hidden border-t border-neutral-200 min-h-[100dvh] flex flex-col justify-center"
     >
       {/* Changed pt-16 to pt-28 on mobile to prevent overlapping fixed headers */}
@@ -249,8 +249,8 @@ export function ContactFooter() {
           {/* CTA headline — static, no hover interaction */}
           <h2
             data-reveal
-            className="font-display footertxt leading-[0.85] uppercase tracking-tighter text-left select-none"
-            style={{ fontSize: "clamp(2.5rem, 7vw, 7rem)" }} // Increased from 2.5rem base for better mobile scale
+            className="font-display footertxt leading-[0.85] uppercase tracking-tighter text-left select-none self-start md:self-center"
+            style={{ fontSize: "clamp(2.5rem, 7vw, 7rem)" }}
           >
             Let&apos;s
             <br />
@@ -258,8 +258,8 @@ export function ContactFooter() {
           </h2>
 
           {/* Form panel — always visible */}
-          <div className="w-full">
-            <div className="w-full md:max-w-md md:ml-auto border border-neutral-200 bg-neutral-50 p-6 md:p-8">
+          <div className="w-full mt-6 md:mt-0">
+            <div className="w-full md:max-w-md md:ml-auto border border-neutral-200 bg-neutral-50 p-4 md:p-8">
               {/* Step progress bar */}
               <div className="flex items-center gap-2 mb-8">
                 {STEPS.map((s, i) => (
@@ -383,7 +383,7 @@ export function ContactFooter() {
                           }))
                         }
                         placeholder={current.placeholder}
-                        className="w-full bg-transparent border-b border-neutral-300 pb-2 font-display text-3xl uppercase placeholder:text-neutral-400 focus:outline-none focus:border-primary"
+                        className="w-full bg-transparent border-b border-neutral-300 pb-2 font-display text-2xl md:text-3xl uppercase placeholder:text-neutral-400 focus:outline-none focus:border-primary"
                         onKeyDown={(e) => {
                           if (e.key === "Enter") handleSubmit();
                         }}

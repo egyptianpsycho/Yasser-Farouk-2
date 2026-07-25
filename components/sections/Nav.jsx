@@ -9,7 +9,7 @@ const NAV_ITEMS = [
   { label: "Behind The Scene", href: "#stills" },
   { label: "Photography Projects", href: "#projects" },
   { label: "Partners & Clients", href: "#brands" },
-  { label: "Contact", href: "#contact" },
+  { label: "Contact", href: "#brands" },
 ];
 
 export function Nav() {
