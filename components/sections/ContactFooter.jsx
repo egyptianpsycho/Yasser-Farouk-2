@@ -245,7 +245,7 @@ export function ContactFooter() {
       <div className="relative w-full max-w-7xl mx-auto px-6 pt-28 md:pt-40 pb-6 flex-1 flex flex-col justify-between">
         {/* ── Hero row ────────────────────────────────────────────────────── */}
 
-        <div className="relative grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 items-center md:min-h-[50vh]">
+        <div className="relative grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 items-center md:min-h-[50vh] max-sm:mt-12">
           {/* CTA headline — static, no hover interaction */}
           <h2
             data-reveal
@@ -258,7 +258,7 @@ export function ContactFooter() {
           </h2>
 
           {/* Form panel — always visible */}
-          <div className="w-full mt-6 md:mt-0">
+          <div className="w-full">
             <div className="w-full md:max-w-md md:ml-auto border border-neutral-200 bg-neutral-50 p-4 md:p-8">
               {/* Step progress bar */}
               <div className="flex items-center gap-2 mb-8">
@@ -295,7 +295,7 @@ export function ContactFooter() {
               </div>
 
               {/* Step content */}
-              <div ref={stepRef} className="min-h-[220px]">
+              <div ref={stepRef} className="min-h-[150px] sm:min-h-[220px]:">
                 {sent ? (
                   /* ── Success state ─────────────────────────────────────── */
                   <div className="space-y-6">
