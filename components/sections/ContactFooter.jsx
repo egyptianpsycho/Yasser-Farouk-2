@@ -242,7 +242,7 @@ export function ContactFooter() {
       className="relative bg-white text-neutral-900 overflow-hidden border-t border-neutral-200 min-h-[100dvh] flex flex-col justify-center"
     >
       {/* Changed pt-16 to pt-28 on mobile to prevent overlapping fixed headers */}
-      <div className="relative w-full max-w-7xl mx-auto px-6 pt-28 md:pt-40 pb-6 flex-1 flex flex-col justify-between">
+      <div className="relative w-full max-w-7xl mx-auto px-6 pt-38 md:pt-40 pb-6 max-sm:pb-0 flex-1 flex flex-col justify-between">
         {/* ── Hero row ────────────────────────────────────────────────────── */}
 
         <div className="relative grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 items-center md:min-h-[50vh] max-sm:mt-12">
@@ -250,7 +250,7 @@ export function ContactFooter() {
           <h2
             data-reveal
             className="font-display footertxt leading-[0.85] uppercase tracking-tighter text-left select-none self-start md:self-center"
-            style={{ fontSize: "clamp(2.5rem, 7vw, 7rem)" }}
+            style={{ fontSize: "clamp(2rem, 7vw, 7rem)" }}
           >
             Let&apos;s
             <br />
