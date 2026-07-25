@@ -28,12 +28,20 @@ const playfair = Playfair_Display({
 });
 
 const SITE_NAME = "Yasser Farouk";
-const SITE_TITLE = "Yasser Farouk — Director of Photography & Film";
+const SITE_TITLE = "Yasser Farouk";
 const SITE_DESCRIPTION =
   "Yasser Farouk is a director of photography and visual storyteller crafting cinematic film, photography, and brand identity work. Based in Cairo & Port Said, Egypt.";
 
-// Set this to your deployed domain once live (e.g. https://yasserfarouk.com)
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://yasser-farouk.example.com";
+const SITE_URL = "https://yasser-farouk.vercel.app";
+
+// ── Add this ──────────────────────────────────────────────────────────────────
+const OG_IMAGE = {
+  url: "/assets/yasserwebimg.webp",
+  width: 1200,
+  height: 630,
+  alt: "Yasser Farouk — Director of Photography",
+};
+// ─────────────────────────────────────────────────────────────────────────────
 
 export const metadata = {
   metadataBase: new URL(SITE_URL),
@@ -68,11 +76,13 @@ export const metadata = {
     description: SITE_DESCRIPTION,
     url: "/",
     locale: "en_US",
+    images: [OG_IMAGE], // ← add this
   },
-  twitter: {
+  twitter: {                                      // ← add this whole block
     card: "summary_large_image",
     title: SITE_TITLE,
     description: SITE_DESCRIPTION,
+    images: [OG_IMAGE.url],
   },
   robots: {
     index: true,
@@ -86,7 +96,6 @@ export const metadata = {
     },
   },
 };
-
 export const viewport = {
   width: "device-width",
   initialScale: 1,
@@ -101,7 +110,7 @@ export default function RootLayout({ children }) {
         "@type": "Person",
         "@id": `${SITE_URL}/#person`,
         name: SITE_NAME,
-        jobTitle: "Director of Photography & Filmmaker",
+        jobTitle: "Videographer & Photographer",
         url: SITE_URL,
         description: SITE_DESCRIPTION,
         address: {
