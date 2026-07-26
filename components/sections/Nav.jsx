@@ -15,7 +15,7 @@ const NAV_ITEMS = [
 export function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [isActive, setIsActive] = useState(false);
-  
+
   const logoRef = useRef(null);
   const menuBtnRef = useRef(null);
   const overlayRef = useRef(null);
@@ -43,7 +43,7 @@ export function Nav() {
             opacity: 1,
             filter: "blur(0px)",
             duration: 0.7,
-            stagger: 0.1, 
+            stagger: 0.1,
             ease: "power3.out",
             clearProps: "willChange",
           }
@@ -63,18 +63,16 @@ export function Nav() {
     if (!overlay || !stairs.length || !content) return;
 
     if (isActive) {
-      // Open Sequence
       gsap.set(overlay, { display: "flex", pointerEvents: "auto" });
 
       const tl = gsap.timeline();
 
-      // Drops from the TOP
-      tl.set(stairs, { scaleY: 0, transformOrigin: "top" }) 
+      tl.set(stairs, { scaleY: 0, transformOrigin: "top" })
         .set(content, { opacity: 0, y: 20, filter: "blur(8px)" })
         .to(stairs, {
           scaleY: 1,
           duration: 0.6,
-          stagger: 0.05, // Reveals Left to Right
+          stagger: 0.05,
           ease: [0.76, 0, 0.24, 1],
         })
         .to(
@@ -89,15 +87,13 @@ export function Nav() {
           "-=0.3"
         );
     } else {
-      // Close Sequence
       const tl = gsap.timeline({
         onComplete: () => {
           gsap.set(overlay, { display: "none", pointerEvents: "none" });
         },
       });
 
-      // Rolls back up to the TOP
-      tl.set(stairs, { transformOrigin: "top" }) 
+      tl.set(stairs, { transformOrigin: "top" })
         .to(content, {
           opacity: 0,
           y: -10,
@@ -112,7 +108,7 @@ export function Nav() {
             duration: 0.6,
             stagger: {
               each: 0.05,
-              from: "end", // Sweeps Right to Left
+              from: "end",
             },
             ease: [0.76, 0, 0.24, 1],
           },
@@ -173,9 +169,9 @@ export function Nav() {
                 key={item.label}
                 href={item.href}
                 onClick={() => setIsActive(false)}
-                className="font-display text-5xl sm:text-7xl uppercase text-white hover:text-neutral-400 transition-colors w-fit flex items-baseline"
+                className="font-display text-4xl sm:text-6xl uppercase text-white hover:text-neutral-400 transition-colors w-fit flex items-center"
               >
-                <span className="font-mono text-xs sm:text-sm text-neutral-500 mr-4 sm:mr-8 mb-2">
+                <span className="font-mono text-xs sm:text-sm text-neutral-500 mr-4 sm:mr-8 self-center">
                   0{index + 1}
                 </span>
                 {item.label}
