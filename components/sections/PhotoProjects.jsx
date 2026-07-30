@@ -187,7 +187,7 @@ export function PhotoProjects() {
   }, [displayed, transitioning]);
   return (
     <section id="projects" className="py-24 md:py-32 px-4 sm:px-6 ">
-      <div className="max-w-[1600px] mx-auto">
+      <div className=" mx-auto">
         <div
           ref={headerRef}
           className="flex flex-col md:flex-row md:items-end md:justify-between mb-10 md:mb-14 gap-6"

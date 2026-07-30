@@ -146,13 +146,15 @@ function IconLoader() {
 function ThemedPlayPause({ isPlaying }) {
   const RED = "hsl(0 85% 55%)";
   return (
+    // w-14 (56px) on mobile → 88px on sm+ breakpoint
     <div
+      className="w-14 h-14 sm:w-[88px] sm:h-[88px]"
       style={{
         filter: "drop-shadow(0 2px 20px rgba(0,0,0,0.7))",
       }}
     >
       {isPlaying ? (
-        <svg viewBox="0 0 100 100" width="88" height="88">
+        <svg viewBox="0 0 100 100" width="100%" height="100%">
           <circle
             cx="50"
             cy="50"
@@ -174,7 +176,7 @@ function ThemedPlayPause({ isPlaying }) {
           <rect x="56" y="28" width="12" height="44" rx="3" fill={RED} />
         </svg>
       ) : (
-        <svg viewBox="0 0 100 100" width="88" height="88">
+        <svg viewBox="0 0 100 100" width="100%" height="100%">
           <circle
             cx="50"
             cy="50"
@@ -248,8 +250,6 @@ function EntryLoader({ loaderRef, title }) {
             strokeLinecap="round"
           />
         </svg>
-        {/* Inner dot pulse */}
-        
       </div>
 
       {/* Project title */}
@@ -262,7 +262,6 @@ function EntryLoader({ loaderRef, title }) {
         </p>
       )}
 
-      {/* Inline keyframes — avoids needing a global CSS file */}
       <style>{`
         @keyframes spin   { to { transform: rotate(360deg); } }
         @keyframes pulse  { 0%,100% { opacity:0.3; transform:scale(1);   }
@@ -283,7 +282,6 @@ function NativePlayer({ src, onOrientation }) {
   const [isPlaying, setIsPlaying] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const hasStartedRef = useRef(false);
-  // Controls stay hidden until the user presses play for the first time
   const [hasEverPlayed, setHasEverPlayed] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -369,7 +367,6 @@ function NativePlayer({ src, onOrientation }) {
   const resetHideTimer = useCallback(() => {
     setShowControls(true);
     if (containerRef.current) containerRef.current.style.cursor = "default";
-
     if (hideTimer.current) window.clearTimeout(hideTimer.current);
     hideTimer.current = window.setTimeout(() => {
       if (videoRef.current && !videoRef.current.paused) {
@@ -427,6 +424,10 @@ function NativePlayer({ src, onOrientation }) {
     resetHideTimer();
   };
 
+  // ── Responsive player sizing ──────────────────────────────────────────────
+  // portrait  → stays tall, auto width
+  // square    → stays square, auto width
+  // landscape → 98vw on mobile so it fills edge-to-edge; capped at 1300px on desktop
   const playerStyle =
     orientation === null
       ? { width: 0, height: 0, overflow: "hidden", opacity: 0 }
@@ -434,7 +435,7 @@ function NativePlayer({ src, onOrientation }) {
       ? { height: "min(88vh, 680px)", width: "auto", aspectRatio: "9/16" }
       : orientation === "square"
       ? { height: "min(78vh, 680px)", width: "auto", aspectRatio: "1/1" }
-      : { width: "min(82%, 1300px)", aspectRatio: "16/9" };
+      : { width: "min(98vw, 1300px)", aspectRatio: "16/9" };
 
   return (
     <div
@@ -534,7 +535,6 @@ export function VideoViewer({ open, project, onClose }) {
   const overlayRef = useRef(null);
   const contentRef = useRef(null);
   const headerTitleRef = useRef(null);
-  // ── Entry loader refs/state ──
   const entryLoaderRef = useRef(null);
   const [entryLoadDone, setEntryLoadDone] = useState(false);
 
@@ -546,17 +546,16 @@ export function VideoViewer({ open, project, onClose }) {
   useEffect(() => {
     if (open) {
       setViewerOrientation(null);
-      // Reset loader every time the viewer opens (or a new project is loaded)
       setEntryLoadDone(false);
     }
   }, [open, project?.video]);
 
-  // ── Dismiss loader once native video metadata is ready ──
+  // Dismiss loader once native video metadata is ready
   useEffect(() => {
     if (viewerOrientation !== null) setEntryLoadDone(true);
   }, [viewerOrientation]);
 
-  // ── Dismiss loader for embeddable iframes after a brief paint window ──
+  // Dismiss loader for embeddable iframes after a brief paint window
   useEffect(() => {
     if (open && project && isEmbeddable(project.video)) {
       const t = setTimeout(() => setEntryLoadDone(true), 750);
@@ -564,7 +563,7 @@ export function VideoViewer({ open, project, onClose }) {
     }
   }, [open, project?.video]);
 
-  // ── GSAP fade-out of the entry loader ──
+  // GSAP fade-out of the entry loader
   useEffect(() => {
     if (entryLoadDone && entryLoaderRef.current) {
       gsap.to(entryLoaderRef.current, {
@@ -706,7 +705,8 @@ export function VideoViewer({ open, project, onClose }) {
         style={{ opacity: 0 }}
       >
         {isEmbeddable(project.video) ? (
-          <div className="w-full h-full flex flex-col items-center justify-center bg-black gap-8 px-6">
+          /* ── Embeddable (YouTube / Vimeo) ── */
+          <div className="w-full h-full flex flex-col items-center justify-center bg-black gap-8 px-1 sm:px-6">
             <div
               className="w-full max-w-5xl"
               style={{ aspectRatio: "16/9" }}
@@ -736,7 +736,8 @@ export function VideoViewer({ open, project, onClose }) {
             </div>
           </div>
         ) : isPortrait ? (
-          <div className="w-full h-full flex items-center justify-center gap-10 px-6 md:px-16">
+          /* ── Portrait native video ── */
+          <div className="w-full h-full flex items-center justify-center gap-10 px-1 sm:px-6 md:px-16">
             <NativePlayer
               key={project.video}
               src={project.video}
@@ -744,7 +745,7 @@ export function VideoViewer({ open, project, onClose }) {
             />
             <div
               ref={headerTitleRef}
-              className="flex flex-col gap-6 max-w-xs shrink-0 hidden md:flex"
+              className="flex-col gap-6 max-w-xs shrink-0 hidden md:flex"
               style={{ opacity: 0, filter: "blur(12px)" }}
             >
               <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-primary">
@@ -764,7 +765,9 @@ export function VideoViewer({ open, project, onClose }) {
             </div>
           </div>
         ) : (
-          <div className="w-full h-full flex flex-col items-center justify-center gap-6 px-6">
+          /* ── Landscape / square native video ── */
+          // px-0 on mobile so the 98vw video has no extra margin eating into it
+          <div className="w-full h-full flex flex-col items-center justify-center gap-6 px-0 sm:px-4">
             <NativePlayer
               key={project.video}
               src={project.video}
@@ -773,9 +776,9 @@ export function VideoViewer({ open, project, onClose }) {
             {viewerOrientation !== null && (
               <div
                 ref={headerTitleRef}
-                className="w-full flex items-end justify-between gap-6"
+                className="w-full flex items-end justify-between gap-6 px-3 sm:px-0"
                 style={{
-                  maxWidth: "min(82%, 1100px)",
+                  maxWidth: "min(98vw, 1100px)",
                   opacity: 0,
                   filter: "blur(12px)",
                 }}

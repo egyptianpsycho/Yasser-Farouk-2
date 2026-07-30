@@ -32,11 +32,11 @@ export function Logos() {
   return (
     <section
       id="brands"
-      className="py-32 px-6 border-t border-border overflow-hidden"
+      className="py-32 px-6 overflow-hidden"
     >
       <div
         ref={ref}
-        className={`max-w-7xl mx-auto flex flex-col items-center reveal ${
+        className={` mx-auto flex flex-col items-center reveal ${
           inView ? "in-view" : ""
         }`}
       >

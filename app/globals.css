@@ -235,20 +235,20 @@ html.has-custom-cursor button {
    
     /* ── 23-item bento — balanced across 4 columns ── */
     /* Column 1 */
-    .div1-video  { grid-column: 1; grid-row: span 5; }
+    .div1-video  { grid-column: 1 / span 2; grid-row: 1 / span 4; }  /* hero: 2 cols wide */
     .div5-video  { grid-column: 1; grid-row: span 4; }
     .div9-video  { grid-column: 1; grid-row: span 3; }
     .div13-video { grid-column: 1; grid-row: span 5; }
     .div17-video { grid-column: 1; grid-row: span 4; }
     .div21-video { grid-column: 1; grid-row: span 4; }
-   
-    /* Column 2 */
-    .div2-video  { grid-column: 2; grid-row: span 3; }
+    
+    /* Column 2 — start after div1 vacates (row 5 onward) */
+    .div2-video  { grid-column: 2; grid-row: 5 / span 3; }
     .div6-video  { grid-column: 2; grid-row: span 5; }
     .div10-video { grid-column: 2; grid-row: span 4; }
     .div14-video { grid-column: 2; grid-row: span 3; }
     .div18-video { grid-column: 2; grid-row: span 5; }
-    .div22-video { grid-column: 2; grid-row: span 5; }
+    .div22-video { grid-column: 2; grid-row: span 5;; }
    
     /* Column 3 */
     .div3-video  { grid-column: 3; grid-row: span 4; }

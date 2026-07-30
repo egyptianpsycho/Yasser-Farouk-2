@@ -3,13 +3,12 @@ import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 
 const NAV_ITEMS = [
-  { label: "Home", href: "#top" },
   { label: "About", href: "#about" },
   { label: "Videography Projects", href: "#motion" },
   { label: "Behind The Scene", href: "#stills" },
   { label: "Photography Projects", href: "#projects" },
   { label: "Partners & Clients", href: "#brands" },
-  { label: "Contact", href: "#brands" },
+  { label: "Contact", href:null },
 ];
 
 export function Nav() {
@@ -166,16 +165,23 @@ export function Nav() {
 
             {NAV_ITEMS.map((item, index) => (
               <a
-                key={item.label}
-                href={item.href}
-                onClick={() => setIsActive(false)}
-                className="font-display text-4xl sm:text-6xl uppercase text-white hover:text-neutral-400 transition-colors w-fit flex items-center"
-              >
+              key={item.label}
+              href={item.href ?? "#"}
+              onClick={() => {
+                setIsActive(false);
+                if (!item.href) {
+                  setTimeout(() => {
+                    window.scrollTo({top: document.documentElement.scrollHeight, 
+                      behavior: "smooth" });
+                  }, 600); // small delay so the menu closes first
+                }
+              }}
+              className="font-display text-3xl sm:text-5xl uppercase text-white hover:text-neutral-400 transition-colors w-fit flex items-center"              >
                 <span className="font-mono text-xs sm:text-sm text-neutral-500 mr-4 sm:mr-8 self-center">
-                  0{index + 1}
-                </span>
-                {item.label}
-              </a>
+      0{index + 1}
+    </span>
+    {item.label}
+  </a>
             ))}
           </div>
         </div>
