@@ -10,7 +10,7 @@ const LOGOS = [
   },
   {
     src: "/assets/logos/3.png",
-    sizeClass: "max-w-[3300px] max-h-[300px]",
+    sizeClass: "max-w-[250px] max-h-[300px]",
   },
   {
     src: "/assets/logos/4.png",
