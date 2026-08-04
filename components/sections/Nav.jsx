@@ -164,20 +164,36 @@ export function Nav() {
             </span>
 
             {NAV_ITEMS.map((item, index) => (
-              <a
-              key={item.label}
-              href={item.href ?? "#"}
-              onClick={() => {
-                setIsActive(false);
-                if (!item.href) {
-                  setTimeout(() => {
-                    window.scrollTo({top: document.documentElement.scrollHeight, 
-                      behavior: "smooth" });
-                  }, 600); // small delay so the menu closes first
-                }
-              }}
-              className="font-display text-3xl sm:text-5xl uppercase text-white hover:text-neutral-400 transition-colors w-fit flex items-center"              >
-                <span className="font-mono text-xs sm:text-sm text-neutral-500 mr-4 sm:mr-8 self-center">
+  <a
+    key={item.label}
+    href={item.href ?? "#"}
+    onClick={(e) => {
+      // 1. Stop the browser from instantly snapping to the ID
+      e.preventDefault(); 
+      
+      // 2. Start the GSAP menu close animation
+      setIsActive(false); 
+
+      // 3. Wait for the stairs to close, then scroll smoothly
+      setTimeout(() => {
+        if (item.href) {
+          // Scroll to specific section ID
+          const target = document.querySelector(item.href);
+          if (target) {
+            target.scrollIntoView({ behavior: "smooth" });
+          }
+        } else {
+          // Scroll to bottom (for Contact)
+          window.scrollTo({
+            top: document.documentElement.scrollHeight,
+            behavior: "smooth",
+          });
+        }
+      }, 600); // 600ms matches your GSAP close duration
+    }}
+    className="font-display text-3xl sm:text-5xl uppercase text-white hover:text-neutral-400 transition-colors w-fit flex items-center"
+  >
+    <span className="font-mono text-xs sm:text-sm text-neutral-500 mr-4 sm:mr-8 self-center">
       0{index + 1}
     </span>
     {item.label}

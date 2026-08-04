@@ -136,7 +136,7 @@ export function Videography() {
     >
       <div ref={root} className="mx-auto">
         <div className="flex justify-between items-end mb-12 md:mb-16 gap-4">
-          <div className="min-w-0">
+          <div className="min-w-0 max-sm:w-full max-sm:flex-1">
             <span
               data-reveal
               className="font-mono text-xs uppercase text-primary block"
@@ -146,12 +146,12 @@ export function Videography() {
             <h2
               ref={titleRef}
               data-reveal
-              className="font-display uppercase tracking-tighter leading-none mt-2"
+              className="font-display uppercase tracking-tighter leading-none mt-2 "
               style={{
                 fontSize: "clamp(3rem, 12vw, 8rem)",
               }}
             >
-              Vision in <span className="italic text-primary">motion</span>
+              Vision in <span className="italic text-primary max-sm:inline-block  max-sm:pr-[0.25em] max-sm:mr-[0.2em] ">motion</span>
             </h2>
           </div>
           <div

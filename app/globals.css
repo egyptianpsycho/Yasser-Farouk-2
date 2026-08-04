@@ -241,6 +241,7 @@ html.has-custom-cursor button {
     .div13-video { grid-column: 1; grid-row: span 5; }
     .div17-video { grid-column: 1; grid-row: span 4; }
     .div21-video { grid-column: 1; grid-row: span 4; }
+    .div25-video { grid-column: 1; grid-row: span 4;;; }
     
     /* Column 2 — start after div1 vacates (row 5 onward) */
     .div2-video  { grid-column: 2; grid-row: 5 / span 3; }
