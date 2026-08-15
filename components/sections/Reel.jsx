@@ -77,18 +77,18 @@ export function Reel() {
 
   return (
     <section
-      className="py-32 px-6 md:h-[120vh] h-screen bg-background relative"
+      className="py-32 max-sm:py-24 px-6 md:h-[120vh] h-screen bg-background relative"
       id="about"
     >
-      <div ref={root} className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-end mb-12">
+      <div ref={root} className="max-w-7xl mx-auto ">
+        <div className="flex justify-between items-end mb-12 max-sm:mb-8">
           <h2 className="font-display text-5xl md:text-7xl uppercase about-title tracking-tighter">
             About ME
           </h2>
         </div>
 
-        <div className="mt-16 md:mt-24">
-          <p className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl leading-[1.15] tracking-tight text-foreground about-text lg:w-8xl mx-auto">
+        <div className="-mt-2 md:mt-24  ">
+          <p className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl leading-[1.15] tracking-tight text-foreground about-text lg:w-8xl mx-auto ">
             I turn ideas into visual stories. Working across commercial
             photography and filmmaking, I create visuals that are built to
             capture attention, and leave an impression.
