@@ -88,9 +88,12 @@ export function Reel() {
         </div>
 
         <div className="mt-16 md:mt-24">
-          <p className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl leading-[1.15] tracking-tight text-foreground about-text lg:w-4xl mx-auto">
-            I make images that breathe stills and motion built on patience,
-            available light, and a love for the quiet middle of a story.
+          <p className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl leading-[1.15] tracking-tight text-foreground about-text lg:w-8xl mx-auto">
+            I turn ideas into visual stories. Working across commercial
+            photography and filmmaking, I create visuals that are built to
+            capture attention, and leave an impression.
+            From concept to final frame, I focus on composition, movement,
+            light, and detail bringing a cinematic edge to every project.
           </p>
         </div>
       </div>

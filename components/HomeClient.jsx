@@ -15,7 +15,7 @@ import { ContactFooter } from "@/components/sections/ContactFooter";
 import { ScrollTrigger } from "@/lib/gsap";
 
 export default function HomeClient() {
-  const [ready, setReady] = useState(false);
+  const [ready, setReady] = useState(true);
 
   useLayoutEffect(() => {
     const resetScroll = () => {
@@ -59,7 +59,7 @@ export default function HomeClient() {
       <SmoothScroll />
       <Cursor />
       <main className="bg-background text-foreground font-body overflow-x-clip">
-        <Intro onDone={() => setReady(true)} />
+        {/* <Intro onDone={() => setReady(true)} /> */}
         <Nav />
         <div className="relative z-10 bg-background">
           <Hero start={ready} />
