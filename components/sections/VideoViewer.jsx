@@ -435,7 +435,7 @@ function NativePlayer({ src, onOrientation }) {
       ? { height: "min(88vh, 680px)", width: "auto", aspectRatio: "9/16" }
       : orientation === "square"
       ? { height: "min(78vh, 680px)", width: "auto", aspectRatio: "1/1" }
-      : { width: "min(80vw,1200px)", aspectRatio: "16/9" };
+      : { width: "min(50vw,1200px)", aspectRatio: "16/9" };
 
   return (
     <div
