@@ -692,7 +692,7 @@ export function VideoViewer({ open, project, onClose }) {
           >
             <path d="M10 3L5 8l5 5" />
           </svg>
-          <span className="font-mono text-[9px] uppercase tracking-[0.2em] leading-none">
+          <span className="font-mono text-[14px] uppercase tracking-[0.2em] leading-none">
             Back
           </span>
         </button>

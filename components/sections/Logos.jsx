@@ -12,25 +12,25 @@ const LOGOS = [
     src: "/assets/logos/3.png",
     sizeClass: "max-w-[250px] max-h-[300px]",
   },
+  { src: "/assets/logos/6.png", sizeClass: "max-w-[400px] max-h-[250px] max-sm: max-w- " },
   {
     src: "/assets/logos/4.png",
     sizeClass: "max-w-[140px] max-h-[100px]",
   },
-  { src: "/assets/logos/5.png", sizeClass: "max-w-[120px] max-h-[150px]" },
-  { src: "/assets/logos/6.png", sizeClass: "max-w-[350px] max-h-[220px]" },
-  { src: "/assets/logos/logo.png", sizeClass: "max-w-[250px] max-h-[160px]" },
-  { src: "/assets/logos/n/1.png" },
-  { src: "/assets/logos/n/2.png", sizeClass: "max-w-[250px] max-h-[220px]" },
+  { src: "/assets/logos/5.png", sizeClass: "max-w-[220px] max-h-[150px]" },
+  { src: "/assets/logos/logo.png", sizeClass: "max-w-[300px] max-h-[190px]" },
+  { src: "/assets/logos/n/1.png", sizeClass: "max-w-[240px] max-h-[250px]" },
+  { src: "/assets/logos/n/2.png", sizeClass: "max-w-[350px] max-h-[220px]" },
   { src: "/assets/logos/n/3.png", sizeClass: "max-w-[250px] max-h-[200px]" },
   { src: "/assets/logos/n/4.png", sizeClass: "max-w-[200px] max-h-[200px]" },
-  { src: "/assets/logos/n/8.png", sizeClass: "max-w-[280px] max-h-[220px]" },
+  { src: "/assets/logos/n/8.png", sizeClass: "max-w-[280px] max-h-[240px]" },
   { src: "/assets/logos/n/6.png", sizeClass: "max-w-[250px] max-h-[200px]" },
 ];
 
 export function Logos() {
   const { ref, inView } = useInView();
   return (
-    <section id="brands" className="py-32 px-6 overflow-hidden">
+    <section id="brands" className="py-32 px-6 overflow-hidden  ">
       <div
         ref={ref}
         className={` mx-auto flex flex-col items-center reveal ${

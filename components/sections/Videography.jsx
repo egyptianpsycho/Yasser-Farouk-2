@@ -151,7 +151,10 @@ export function Videography() {
                 fontSize: "clamp(3rem, 12vw, 8rem)",
               }}
             >
-              Vision in <span className="italic text-primary max-sm:inline-block  max-sm:pr-[0.25em] max-sm:mr-[0.2em] ">motion</span>
+              Vision in{" "}
+              <span className="italic text-primary max-sm:inline-block  max-sm:pr-[0.25em] max-sm:mr-[0.2em] ">
+                motion
+              </span>
             </h2>
           </div>
           <div
@@ -174,24 +177,31 @@ export function Videography() {
               marginLeft: "calc(-50vw + 50%)",
             }}
           >
-            {PROJECTS.map((p, idx) => (
-              <div
-                key={p.id}
-                style={{
-                  gridColumn: idx === 0 ? "span 2" : undefined,
-                  aspectRatio: idx === 0 ? "16 / 9" : "1 / 1",
-                  position: "relative",
-                  overflow: "hidden",
-                  opacity: 1, // always visible on mobile
-                }}
-              >
-                <VideoCard
-                  p={p}
-                  onOpen={setActive}
-                  sizes={idx === 0 ? "100vw" : "50vw"}
-                />
-              </div>
-            ))}
+            {PROJECTS.map((p, idx) => {
+              // Flag for Video 1 (idx 0) and Video 4 (idx 3)
+              const isWide = idx === 0 || idx === 3;
+
+              return (
+                <div
+                  key={p.id}
+                  style={{
+                    gridColumn: isWide ? "span 2" : undefined,
+                    aspectRatio: isWide ? "16 / 9" : "1 / 1",
+                    // Force Video 1 first, Video 4 second, and bump the rest down
+                    order: idx === 0 ? 1 : idx === 3 ? 2 : idx + 3,
+                    position: "relative",
+                    overflow: "hidden",
+                    opacity: 1, // always visible on mobile
+                  }}
+                >
+                  <VideoCard
+                    p={p}
+                    onOpen={setActive}
+                    sizes={isWide ? "100vw" : "50vw"}
+                  />
+                </div>
+              );
+            })}
           </div>
         ) : (
           // ── Desktop bento grid — GSAP animates .video-item ──
@@ -199,7 +209,9 @@ export function Videography() {
             {PROJECTS.map((p, idx) => (
               <div
                 key={p.id}
-                className={`video-item div${idx + 1}-video relative overflow-hidden`}
+                className={`video-item div${
+                  idx + 1
+                }-video relative overflow-hidden`}
               >
                 <VideoCard
                   p={p}
@@ -225,11 +237,7 @@ export function Videography() {
   );
 }
 
-function VideoCard({
-  p,
-  onOpen,
-  sizes = "(max-width: 768px) 50vw, 25vw",
-}) {
+function VideoCard({ p, onOpen, sizes = "(max-width: 768px) 50vw, 25vw" }) {
   return (
     <button
       type="button"
