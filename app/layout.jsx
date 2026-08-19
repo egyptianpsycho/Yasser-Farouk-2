@@ -32,7 +32,7 @@ const SITE_TITLE = "Yasser Farouk";
 const SITE_DESCRIPTION =
   "Yasser Farouk is a director of photography and visual storyteller crafting cinematic film, photography, and brand identity work. Based in Cairo & Port Said, Egypt.";
 
-const SITE_URL = "https://yasser-farouk.vercel.app";
+const SITE_URL = "https://yasserfarouk.com/";
 
 // ── Add this ──────────────────────────────────────────────────────────────────
 const OG_IMAGE = {
@@ -50,6 +50,11 @@ export const metadata = {
     template: `%s — ${SITE_NAME}`,
   },
   description: SITE_DESCRIPTION,
+  icons: {
+    icon: [
+      { url: "/fav.svg", type: "image/svg+xml" },     // public/favicon.webp
+    ],
+  },
   applicationName: SITE_NAME,
   authors: [{ name: SITE_NAME }],
   creator: SITE_NAME,

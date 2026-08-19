@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <!-- Outer rounded white container -->
+  <rect width="512" height="512" rx="110" fill="#ffffff"/>
+  
+  <!-- Black 'Y' glyph -->
+  <path d="M125 90 L220 90 L256 220 L292 90 L387 90 L298 285 L298 422 L214 422 L214 285 Z" fill="#000000"/>
+</svg>

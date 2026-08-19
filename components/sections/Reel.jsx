@@ -77,7 +77,7 @@ export function Reel() {
 
   return (
     <section
-      className="py-32 max-sm:py-18 px-6 md:h-[120vh] h-screen bg-background relative"
+      className="py-32 max-sm:py-18 px-6 md:h-[120vh] min-h-screen h-auto bg-background relative"
       id="about"
     >
       <div ref={root} className="max-w-7xl mx-auto ">
