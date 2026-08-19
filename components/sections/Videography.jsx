@@ -39,7 +39,6 @@ export function Videography() {
 
       gsap.set(reveals, {
         opacity: 0,
-        y: 40,
         filter: "blur(12px)",
         willChange: "transform, opacity, filter",
       });
