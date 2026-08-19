@@ -15,6 +15,7 @@ const PROJECTS = PROJECTS_VIDEOS.map((p) => ({
   video: p.videoURL,
   client: p.client,
   duration: p.duration,
+  description:p.description
 }));
 
 export function Videography() {
